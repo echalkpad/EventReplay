@@ -1,13 +1,12 @@
 package com.nissatech.proasense.eventplayer;
 
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
-import java.util.concurrent.ExecutorService;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.servlet.ServletContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
+import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
 
 
@@ -21,17 +20,22 @@ public class AsyncRequestWorker implements Runnable {
 
     private PlaybackRequest request;
     private String id;
-    private boolean running;
-    private ScheduledExecutorService scheduler;
 
-    @Context
-    ServletContext context; 
+    private boolean running;
+    private boolean finished;
+
+    public boolean isFinished()
+    {
+        return finished;
+    }
+    private final ScheduledExecutorService scheduler;
     
     
     public AsyncRequestWorker(PlaybackRequest request, String id) {
         this.request=request;
         this.id=id;
         running = true;
+        finished=false;
         scheduler = Executors.newSingleThreadScheduledExecutor();
         
     }
@@ -69,7 +73,8 @@ public class AsyncRequestWorker implements Runnable {
             scheduler.schedule(new EventSender(), 25, TimeUnit.SECONDS);
             scheduler.schedule(new EventSender(), 30, TimeUnit.SECONDS);
             scheduler.shutdown();
-            scheduler.awaitTermination(12, TimeUnit.HOURS);            
+            scheduler.awaitTermination(12, TimeUnit.HOURS);  
+            finished=true;
         }
         catch (InterruptedException ex) {
             LoggerFactory.getLogger(this.getClass().getName()).error(ex.toString());
@@ -79,7 +84,6 @@ public class AsyncRequestWorker implements Runnable {
             if(!scheduler.isTerminated())
                 scheduler.shutdownNow();
             running = false;
-            ContextVariables.getJobs().remove(this.id);
               
         }
        

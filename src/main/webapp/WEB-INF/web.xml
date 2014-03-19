@@ -11,7 +11,7 @@
     </session-config>
     <listener>
         <listener-class>
-            com.nissatech.proasense.eventplayer.ContextListener
+            com.nissatech.proasense.eventplayer.context.ContextListener
         </listener-class>
     </listener>
     <context-param>
@@ -20,7 +20,7 @@
     </context-param>
     <context-param>
         <param-name>resteasy.providers</param-name>
-        <param-value>com.nissatech.proasense.eventplayer.AsyncRequestWorker</param-value>
+        <param-value>com.nissatech.proasense.eventplayer.context.JacksonConfigurator</param-value>
     </context-param>
     <context-param>
         <param-name>resteasy.servlet.mapping.prefix</param-name>
@@ -30,7 +30,7 @@
         <servlet-name>Resteasy</servlet-name>
         <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
     </servlet>
-        <servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Resteasy</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>

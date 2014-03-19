@@ -3,6 +3,7 @@ package com.nissatech.proasense.eventplayer.model;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.joda.time.DateTime;
 
@@ -13,12 +14,16 @@ import org.joda.time.DateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaybackRequest
 {
+
     @NotNull
     private DateTime startTime;
-    
+
     @NotNull
     private DateTime endTime;
-    
+
+    @Null
+    private DateTime submitted;
+
     @NotNull
     private List<String> variables;
 
@@ -56,6 +61,15 @@ public class PlaybackRequest
     {
         this.endTime = endTime;
     }
-    
-    
+
+    public DateTime getSubmitted()
+    {
+        return submitted;
+    }
+
+    public void setSubmitted(DateTime submitted)
+    {
+        this.submitted = submitted;
+    }
+
 }

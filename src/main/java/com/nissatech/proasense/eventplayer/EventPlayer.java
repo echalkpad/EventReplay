@@ -1,5 +1,6 @@
 package com.nissatech.proasense.eventplayer;
 
+
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
 import java.io.IOException;
 import java.util.Map;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -40,6 +42,8 @@ public class EventPlayer
     {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) context.getAttribute("executor");
         Map<String, AsyncRequestWorker> jobMap = (Map<String, AsyncRequestWorker>) context.getAttribute("jobs");
+        
+        request.setSubmitted(new DateTime());
         AsyncRequestWorker worker = new AsyncRequestWorker(request, UUID.randomUUID().toString());
         executor.execute(worker);
         jobMap.put(worker.getId(), worker);
