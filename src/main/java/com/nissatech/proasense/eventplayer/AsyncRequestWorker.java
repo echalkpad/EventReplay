@@ -100,7 +100,7 @@ public class AsyncRequestWorker implements Runnable
                     deltaAbsolute = 0;
                 }
                 
-                scheduler.schedule(new EventSender(sendersAvailable, kpFactory.createProducer(), partnerConfiguration.generateMessage(row)), deltaAbsolute, TimeUnit.MILLISECONDS);
+                scheduler.schedule(new EventSender(sendersAvailable, kpFactory.createProducer(), partnerConfiguration.generateMessage(row), request), deltaAbsolute, TimeUnit.MILLISECONDS);
 
                 lastSendSubmitted = System.currentTimeMillis();
                 previous = eventTime.getMillis();

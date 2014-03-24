@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
 /**
@@ -25,7 +27,21 @@ public class PlaybackRequest
     private DateTime submitted;
 
     @NotNull
+    @NotEmpty
     private List<String> variables;
+    
+    @NotBlank
+    private String topic;
+
+    public String getTopic()
+    {
+        return topic;
+    }
+
+    public void setTopic(String topic)
+    {
+        this.topic = topic;
+    }
 
     public PlaybackRequest()
     {
