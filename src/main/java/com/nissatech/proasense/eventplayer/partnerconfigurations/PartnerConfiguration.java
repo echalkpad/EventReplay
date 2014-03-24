@@ -1,7 +1,9 @@
 package com.nissatech.proasense.eventplayer.partnerconfigurations;
 
 import com.datastax.driver.core.BoundStatement;
+import com.datastax.driver.core.Row;
 import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
+import java.io.IOException;
 import java.util.List;
 import org.joda.time.DateTime;
 
@@ -12,5 +14,6 @@ import org.joda.time.DateTime;
 public interface PartnerConfiguration
 {
     public BoundStatement generateQuery(DateTime startTime, DateTime endTime, List<String> variables, CassandraSimpleClient client);
+    public String generateMessage(Row row) throws IOException;
    
 }

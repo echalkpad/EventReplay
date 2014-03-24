@@ -6,7 +6,6 @@ import com.nissatech.proasense.eventplayer.partnerconfigurations.AkerConfigurati
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadPoolExecutor;
