@@ -2,7 +2,11 @@ package com.nissatech.proasense.eventplayer;
 
 
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
+import com.nissatech.proasense.eventplayer.partnerconfigurations.AkerConfiguration;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.joda.time.DateTime;
 
@@ -38,16 +43,19 @@ public class EventPlayer
     @POST
     @Produces(value = MediaType.TEXT_PLAIN)
     @ValidateOnExecution
-    public Response startWorker(@Valid PlaybackRequest request)
+    public Response startWorker(@Valid PlaybackRequest request) throws MalformedURLException
     {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) context.getAttribute("executor");
         Map<String, AsyncRequestWorker> jobMap = (Map<String, AsyncRequestWorker>) context.getAttribute("jobs");
         
         request.setSubmitted(new DateTime());
-        AsyncRequestWorker worker = new AsyncRequestWorker(request, UUID.randomUUID().toString());
+        AsyncRequestWorker worker = new AsyncRequestWorker(request, UUID.randomUUID().toString(), new AkerConfiguration());
         executor.execute(worker);
         jobMap.put(worker.getId(), worker);
-        return Response.status(Response.Status.CREATED).header("Location",uri.getRequestUri()+"/"+worker.getId()).build();
+        
+        URI callbackURI = UriBuilder.fromUri(uri.getRequestUri()).path(worker.getId()).build();
+        
+        return Response.status(Response.Status.CREATED).header("Location",callbackURI).build();
     }
 
     @DELETE

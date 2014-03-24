@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.ws.rs.ext.Provider;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -24,11 +23,10 @@ public class ContextListener implements ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent sce)
     {
-        LoggerFactory.getLogger(this.getClass().getName()).info("Context initialized");
         ThreadPoolExecutor executor = new ThreadPoolExecutor(100, 200, Long.MAX_VALUE, TimeUnit.NANOSECONDS, new ArrayBlockingQueue<Runnable>(100));
         //Map jobs = new ConcurrentHashMap<String,AsyncRequestWorker>();
         sce.getServletContext().setAttribute("executor", executor);
-        final ConcurrentHashMap<String, AsyncRequestWorker> jobs = new ConcurrentHashMap<String,AsyncRequestWorker>();
+        final ConcurrentHashMap<String, AsyncRequestWorker> jobs = new ConcurrentHashMap<String, AsyncRequestWorker>();
         sce.getServletContext().setAttribute("jobs", jobs);
         ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutor.scheduleAtFixedRate(new Runnable()
@@ -37,10 +35,10 @@ public class ContextListener implements ServletContextListener
             @Override
             public void run()
             {
-                for(Map.Entry<String, AsyncRequestWorker> s : jobs.entrySet())
-                {
-                    if(!s.getValue().isRunning())
+                for (Map.Entry<String, AsyncRequestWorker> s : jobs.entrySet()) {
+                    if (!s.getValue().isRunning()) {
                         jobs.remove(s.getKey());
+                    }
                 }
             }
 
@@ -52,13 +50,15 @@ public class ContextListener implements ServletContextListener
     @Override
     public void contextDestroyed(ServletContextEvent sce)
     {
-        LoggerFactory.getLogger(this.getClass().getName()).info("Context destroyed");
+
         ThreadPoolExecutor executor = (ThreadPoolExecutor) sce.getServletContext().getAttribute("executor");
         if (executor != null) {
             executor.shutdownNow();
         }
         ScheduledExecutorService pruningJob = (ScheduledExecutorService) sce.getServletContext().getAttribute("pruning");
-        pruningJob.shutdownNow();
+        if (pruningJob != null) {
+            pruningJob.shutdownNow();
+        }
     }
 
 }
