@@ -20,7 +20,8 @@
     </context-param>
     <context-param>
         <param-name>resteasy.providers</param-name>
-        <param-value>com.nissatech.proasense.eventplayer.context.JacksonConfigurator</context-param>
+        <param-value>com.nissatech.proasense.eventplayer.context.JacksonConfigurator</param-value>
+    </context-param>
     <context-param>
         <param-name>resteasy.servlet.mapping.prefix</param-name>
         <param-value>/api</param-value>
@@ -33,6 +34,5 @@
         <servlet-name>Resteasy</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
-    
 </web-app> 
 

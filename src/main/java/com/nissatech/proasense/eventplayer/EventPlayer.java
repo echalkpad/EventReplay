@@ -55,7 +55,6 @@ public class EventPlayer
         
         return Response.status(Response.Status.CREATED).header("Location",callbackURI).build();
     }
-
     @DELETE
     @Path("/{workerId}")
     public Response stopWorker(@PathParam("workerId") String workerid)

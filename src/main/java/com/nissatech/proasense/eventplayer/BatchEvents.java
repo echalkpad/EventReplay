@@ -1,6 +1,7 @@
 package com.nissatech.proasense.eventplayer;
 
 import com.datastax.driver.core.BoundStatement;
+import com.datastax.driver.core.ResultSet;
 import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.AkerConfiguration;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfiguration;
@@ -37,7 +38,11 @@ public class BatchEvents
         props.load(resourceAsStream);
         PartnerConfiguration configuration = new AkerConfiguration();
         String[] variableList = variables.split(",");
-        BoundStatement generatedQuery = configuration.generateQuery(start, end, Arrays.asList(variableList), new CassandraSimpleClient());
-        return Response.ok().build();
+        CassandraSimpleClient cassandraClient = new CassandraSimpleClient().connect("127.0.0.1");
+        BoundStatement generatedQuery = configuration.generateQuery(start, end, Arrays.asList(variableList), cassandraClient);
+        ResultSet results = cassandraClient.execute(generatedQuery);
+        String generateBatch = configuration.generateBatch(results);
+        
+        return Response.ok().entity(generateBatch).build();
     }
 }

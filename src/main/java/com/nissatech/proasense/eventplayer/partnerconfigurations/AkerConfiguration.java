@@ -1,6 +1,7 @@
 package com.nissatech.proasense.eventplayer.partnerconfigurations;
 
 import com.datastax.driver.core.BoundStatement;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
@@ -55,6 +56,23 @@ public class AkerConfiguration implements PartnerConfiguration
         message.put("value", row.getDouble("value"));
         message.put("variable_type", row.getString("variable_type"));
         return mapper.writeValueAsString(message);
+    }
+
+    @Override
+    public String generateBatch(ResultSet rows) throws IOException
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        List<HashMap> batch = new ArrayList<HashMap>();
+        for (Row row : rows)
+        {
+            HashMap message = new HashMap();
+            DateTime date = new DateTime(row.getDate("variable_timestamp"));
+            message.put("variable_timestamp", date);
+            message.put("value", row.getDouble("value"));
+            message.put("variable_type", row.getString("variable_type"));
+            batch.add(message);
+        }
+        return mapper.writeValueAsString(batch);
     }
 
 }
