@@ -30,7 +30,6 @@ import org.joda.time.DateTime;
  * @author aleksandar
  */
 @Path("/playback")
-
 public class EventPlayer
 {
 

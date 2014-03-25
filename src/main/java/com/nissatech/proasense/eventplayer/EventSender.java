@@ -1,12 +1,10 @@
 package com.nissatech.proasense.eventplayer;
 
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
-import java.util.Properties;
 import java.util.concurrent.Semaphore;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 
-import kafka.producer.ProducerConfig;
 
 /**
  *
@@ -15,6 +13,7 @@ import kafka.producer.ProducerConfig;
 public class EventSender implements Runnable
 {
 
+    
     private final Semaphore availability;
     private final Producer kafkaProducer;
     private final String payload;

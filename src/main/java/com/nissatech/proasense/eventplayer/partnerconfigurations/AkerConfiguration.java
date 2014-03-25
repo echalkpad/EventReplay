@@ -2,12 +2,12 @@ package com.nissatech.proasense.eventplayer.partnerconfigurations;
 
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Row;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.Hours;
 

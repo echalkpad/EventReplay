@@ -1,10 +1,10 @@
 package com.nissatech.proasense.eventplayer.model;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
@@ -13,7 +13,7 @@ import org.joda.time.DateTime;
  *
  * @author aleksandar
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class PlaybackRequest
 {
 

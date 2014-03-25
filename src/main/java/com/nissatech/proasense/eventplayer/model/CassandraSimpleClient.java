@@ -2,7 +2,6 @@ package com.nissatech.proasense.eventplayer.model;
 
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 
@@ -20,10 +19,11 @@ public class CassandraSimpleClient
     {
         
     }
-    public void connect(String address)
+    public CassandraSimpleClient connect(String address)
     {
         cluster = Cluster.builder().addContactPoint(address).build(); 
         session = cluster.connect("proasense");
+        return this;
         
     }
     public void close()
