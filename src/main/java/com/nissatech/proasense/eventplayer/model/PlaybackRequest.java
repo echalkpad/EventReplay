@@ -26,22 +26,16 @@ public class PlaybackRequest
     @Null
     private DateTime submitted;
 
+    @NotBlank
+    private String topic;
+    
     @NotNull
     @NotEmpty
     private List<String> variables;
     
-    @NotBlank
-    private String topic;
+    
 
-    public String getTopic()
-    {
-        return topic;
-    }
-
-    public void setTopic(String topic)
-    {
-        this.topic = topic;
-    }
+   
 
     public PlaybackRequest()
     {
@@ -58,6 +52,16 @@ public class PlaybackRequest
         this.variables = variables;
     }
 
+     public String getTopic()
+    {
+        return topic;
+    }
+
+    public void setTopic(String topic)
+    {
+        this.topic = topic;
+    }
+    
     public DateTime getStartTime()
     {
         return startTime;

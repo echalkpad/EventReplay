@@ -4,6 +4,8 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,6 +64,8 @@ public class AkerConfiguration implements PartnerConfiguration
     public String generateBatch(ResultSet rows) throws IOException
     {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setDateFormat(new ISO8601DateFormat());
+        mapper.registerModule(new JodaModule());
         List<HashMap> batch = new ArrayList<HashMap>();
         for (Row row : rows)
         {

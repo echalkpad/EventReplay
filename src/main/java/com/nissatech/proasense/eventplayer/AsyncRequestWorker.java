@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Aleksandar
  */
-@Provider
 public class AsyncRequestWorker implements Runnable
 {
 
