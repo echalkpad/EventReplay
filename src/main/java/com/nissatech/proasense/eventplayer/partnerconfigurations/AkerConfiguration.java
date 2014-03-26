@@ -6,7 +6,7 @@ import com.datastax.driver.core.Row;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
+import com.nissatech.proasense.eventplayer.model.CassandraClient;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class AkerConfiguration implements PartnerConfiguration
 {
 
     @Override
-    public BoundStatement generateQuery(DateTime startTime, DateTime endTime, List<String> variables, CassandraSimpleClient client)
+    public BoundStatement generateQuery(DateTime startTime, DateTime endTime, List<String> variables, CassandraClient client)
     {
 
         DateTime roundedStartTime = startTime.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0); //to be sure we have the complete hour

@@ -3,7 +3,7 @@ package com.nissatech.proasense.eventplayer;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.ResultSet;
 import com.google.inject.Inject;
-import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
+import com.nissatech.proasense.eventplayer.model.CassandraClient;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.InvalidPartnerException;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfiguration;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfigurationResolver;
@@ -28,19 +28,24 @@ public class BatchEvents
 { 
     @Inject
     private PartnerConfigurationResolver resolver;
+    
+    @Inject 
+    private CassandraClient cassandraClient;
 
+    @Inject
+    private Properties properties;
+    
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{partner}/variables/{variables}/between/{startTime}/and/{endTime}")
     public Response batchEvents(@PathParam("partner") String partner, @PathParam("variables") String variables, @PathParam("startTime") DateTime start, @PathParam("endTime") DateTime end) throws IOException, InvalidPartnerException
     {
-        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("conf.properties");
-        Properties props = new Properties();
-        props.load(resourceAsStream);
+        
         PartnerConfiguration configuration = resolver.getConfiguration(partner);
         String[] variableList = variables.split(",");
-        CassandraSimpleClient cassandraClient = new CassandraSimpleClient().connect("127.0.0.1");
+        
+        cassandraClient.connect(properties.getProperty("cassandra.host"));
         BoundStatement generatedQuery = configuration.generateQuery(start, end, Arrays.asList(variableList), cassandraClient);
         ResultSet results = cassandraClient.execute(generatedQuery);
         String generateBatch = configuration.generateBatch(results);

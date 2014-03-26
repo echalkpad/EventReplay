@@ -3,16 +3,17 @@ package com.nissatech.proasense.eventplayer;
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.google.inject.Inject;
 import com.nissatech.proasense.eventplayer.context.KafkaProducerFactory;
-import com.nissatech.proasense.eventplayer.model.CassandraSimpleClient;
+import com.nissatech.proasense.eventplayer.model.CassandraClient;
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfiguration;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import javax.ws.rs.ext.Provider;
 import kafka.javaapi.producer.Producer;
 import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,15 @@ public class AsyncRequestWorker implements Runnable
     private final Semaphore sendersAvailable = new Semaphore(10, true);
 
     private final PartnerConfiguration partnerConfiguration;
+    
+    @Inject
+    private KafkaProducerFactory kpFactory; //for some reason injection is not working!
+    
+    @Inject
+    private Properties properties;
+    
+    @Inject
+    private CassandraClient cassandraClient;
 
     public boolean isFinished()
     {
@@ -40,6 +50,7 @@ public class AsyncRequestWorker implements Runnable
     }
     private final ScheduledExecutorService scheduler;
 
+    @Inject
     public AsyncRequestWorker(PlaybackRequest request, String id, PartnerConfiguration conf)
     {
         this.request = request;
@@ -74,15 +85,19 @@ public class AsyncRequestWorker implements Runnable
     @Override
     public void run()
     {
-        CassandraSimpleClient client = null;
         Producer producer = null;
         try
         {
-            client = new CassandraSimpleClient();
-            KafkaProducerFactory<String, String> kpFactory = new KafkaProducerFactory<String, String>();
-            client.connect("127.0.0.1");
-            BoundStatement generatedQuery = partnerConfiguration.generateQuery(request.getStartTime(), request.getEndTime(), request.getVariables(), client);
-            ResultSet results = client.execute(generatedQuery);
+            /** This is overriding injection since it is not working for now**/
+            PropertyProvider provider = new PropertyProvider();
+            properties = provider.get();
+            cassandraClient = new CassandraClient();
+            cassandraClient.connect(properties.getProperty("cassandra.host"));
+            kpFactory = new KafkaProducerFactory<String,String>();
+            //****//
+            
+            BoundStatement generatedQuery = partnerConfiguration.generateQuery(request.getStartTime(), request.getEndTime(), request.getVariables(), cassandraClient);
+            ResultSet results = cassandraClient.execute(generatedQuery);
             long previous = Long.MAX_VALUE;
             long lastSendSubmitted = 0L;
             for (Row row : results)
@@ -98,8 +113,8 @@ public class AsyncRequestWorker implements Runnable
                 {
                     deltaAbsolute = 0;
                 }
-                
-                scheduler.schedule(new EventSender(sendersAvailable, kpFactory.createProducer(), partnerConfiguration.generateMessage(row), request), deltaAbsolute, TimeUnit.MILLISECONDS);
+                producer = kpFactory.createProducer();
+                scheduler.schedule(new EventSender(sendersAvailable, producer, partnerConfiguration.generateMessage(row), request), deltaAbsolute, TimeUnit.MILLISECONDS);
 
                 lastSendSubmitted = System.currentTimeMillis();
                 previous = eventTime.getMillis();
@@ -124,9 +139,9 @@ public class AsyncRequestWorker implements Runnable
                 scheduler.shutdownNow();
             }
             running = false;
-            if (client != null)
+            if (cassandraClient != null)
             {
-                client.close();
+                cassandraClient.close();
             }
             if (producer != null)
             {

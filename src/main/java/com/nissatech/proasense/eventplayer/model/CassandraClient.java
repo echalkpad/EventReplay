@@ -4,22 +4,23 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
+import com.google.inject.Inject;
 
 /**
  *
  * @author aleksandar
  */
-public class CassandraSimpleClient
+public class CassandraClient
 {
 
     private Cluster cluster;
     private Session session;
 
-    public CassandraSimpleClient()
+    @Inject
+    public CassandraClient()
     {
-        
     }
-    public CassandraSimpleClient connect(String address)
+    public CassandraClient connect(String address)
     {
         cluster = Cluster.builder().addContactPoint(address).build(); 
         session = cluster.connect("proasense");

@@ -1,5 +1,7 @@
 package com.nissatech.proasense.eventplayer.context;
 
+import com.google.inject.Inject;
+import com.nissatech.proasense.eventplayer.PropertyProvider;
 import java.util.Properties;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.ProducerConfig;
@@ -13,15 +15,18 @@ import kafka.producer.ProducerConfig;
 public class KafkaProducerFactory<T,R>
 {
 
+    @Inject
+    Properties props;
+    
+    @Inject
     public KafkaProducerFactory()
     {
-        
+        this.props= new PropertyProvider().get();
     }
     
-    public Producer<T,R> createProducer()
+    public Producer<T, R> createProducer()
     {
-        Properties props = new Properties();
-        props.put("metadata.broker.list", "127.0.0.1:9092");
+        props.put("metadata.broker.list", props.getProperty("kafka.host"));
         props.put("serializer.class", "kafka.serializer.StringEncoder");
         props.put("producer.type", "async");
         props.put("queue.enqueue.timeout.ms", "-1");
