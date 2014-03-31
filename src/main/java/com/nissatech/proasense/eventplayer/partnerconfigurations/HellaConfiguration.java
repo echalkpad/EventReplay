@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.nissatech.proasense.eventplayer.partnerconfigurations;
 
 import com.datastax.driver.core.BoundStatement;
@@ -57,16 +56,15 @@ public class HellaConfiguration implements PartnerConfiguration
     @Override
     public String generateMessage(Row row) throws IOException
     {
-        /*ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         mapper.setDateFormat(new ISO8601DateFormat());
         HashMap message = new HashMap();
         DateTime date = new DateTime(row.getDate("variable_timestamp"));
         message.put("variable_timestamp", date);
-        message.put("value", row.getDouble("value"));
-        message.put("variable_type", row.getString("variable_type"));
-        return mapper.writeValueAsString(message);*/
-        return "holla mundo";
+        message.put("values", row.getMap("values", String.class, String.class));
+        return mapper.writeValueAsString(message);
+
     }
 
     @Override
@@ -81,11 +79,10 @@ public class HellaConfiguration implements PartnerConfiguration
             HashMap message = new HashMap();
             DateTime date = new DateTime(row.getDate("variable_timestamp"));
             message.put("variable_timestamp", date);
-            message.put("value", row.getDouble("value"));
-            message.put("variable_type", row.getString("variable_type"));
+            message.put("values", row.getMap("values", String.class, String.class));
             batch.add(message);
         }
         return mapper.writeValueAsString(batch);
     }
-    
+
 }
