@@ -4,6 +4,7 @@ import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.nissatech.proasense.eventplayer.context.KafkaProducerFactory;
 import com.nissatech.proasense.eventplayer.model.CassandraClient;
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
@@ -36,7 +37,7 @@ public class AsyncRequestWorker implements Runnable
     private final PartnerConfiguration partnerConfiguration;
     
     @Inject
-    private KafkaProducerFactory kpFactory; //for some reason injection is not working!
+    private KafkaProducerFactory kpFactory; 
     
     @Inject
     private Properties properties;
@@ -51,7 +52,7 @@ public class AsyncRequestWorker implements Runnable
     private final ScheduledExecutorService scheduler;
 
     @Inject
-    public AsyncRequestWorker(PlaybackRequest request, String id, PartnerConfiguration conf)
+    public AsyncRequestWorker(@Assisted PlaybackRequest request, @Assisted String id, @Assisted PartnerConfiguration conf)
     {
         this.request = request;
         this.id = id;
@@ -89,26 +90,17 @@ public class AsyncRequestWorker implements Runnable
         
         try
         {
-            /** This is overriding injection since it is not working for now**/
-            PropertyProvider provider = new PropertyProvider();
-            properties = provider.get();
-            cassandraClient = new CassandraClient();
             cassandraClient.connect(properties.getProperty("cassandra.host"));
-            kpFactory = new KafkaProducerFactory<String,String>();
-           
-            //****//
-            
+         
             BoundStatement generatedQuery = partnerConfiguration.generateQuery(request.getStartTime(), request.getEndTime(), request.getVariables(), cassandraClient);
             ResultSet results = cassandraClient.execute(generatedQuery);
             long accumulatedDelay = 0;
             long startOfSending = System.currentTimeMillis();
             long previousEventTime=Long.MAX_VALUE;
-            //d(x) = d(x-1) + d(ex-1, x1) - (Tnow - Tstart)
             for (Row row : results)
             {
 
-                sendersAvailable.acquire();
-                
+                sendersAvailable.acquire();               
                 DateTime eventTime = new DateTime(row.getDate("variable_timestamp"));
                 long deltaEvent = eventTime.getMillis() - previousEventTime;
                 if(deltaEvent < 0) deltaEvent =0;
@@ -116,8 +108,7 @@ public class AsyncRequestWorker implements Runnable
                 
                 long deltaAbsolute = accumulatedDelay - (System.currentTimeMillis() - startOfSending);
                 producer = kpFactory.createProducer();
-                
-                System.out.println(deltaEvent);
+
                 scheduler.schedule(new EventSender(sendersAvailable, producer, partnerConfiguration.generateMessage(row), request), deltaAbsolute, TimeUnit.MILLISECONDS);
                 previousEventTime = eventTime.getMillis();
             }

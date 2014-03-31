@@ -2,6 +2,7 @@ package com.nissatech.proasense.eventplayer;
 
 
 import com.google.inject.Inject;
+import com.nissatech.proasense.eventplayer.factories.AsyncRequestWorkerFactory;
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.AkerConfiguration;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.InvalidPartnerException;
@@ -40,8 +41,12 @@ public class EventPlayer
     private ServletContext context;
     @Context
     UriInfo uri;
+    
     @Inject
     PartnerConfigurationResolver resolver;
+    
+    @Inject
+    AsyncRequestWorkerFactory ARWfactory;
 
     @POST
     @Produces(value = MediaType.TEXT_PLAIN)
@@ -52,7 +57,7 @@ public class EventPlayer
         Map<String, AsyncRequestWorker> jobMap = (Map<String, AsyncRequestWorker>) context.getAttribute("jobs");
         
         request.setSubmitted(new DateTime());
-        AsyncRequestWorker worker = new AsyncRequestWorker(request, UUID.randomUUID().toString(), resolver.getConfiguration(request.getPartner()));
+        AsyncRequestWorker worker = ARWfactory.create(request, UUID.randomUUID().toString(), resolver.getConfiguration(request.getPartner()));
         executor.execute(worker);
         jobMap.put(worker.getId(), worker);
         
