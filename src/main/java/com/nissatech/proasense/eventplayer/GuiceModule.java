@@ -40,7 +40,6 @@ public class GuiceModule implements Module
         binder.bind(PartnerConfigurationResolver.class);
         binder.bind(CassandraClient.class);
         binder.bind(Properties.class).toProvider(PropertyProvider.class);
-        //binder.bind(AsyncRequestWorker.class);
         binder.bind(KafkaProducerFactory.class).toInstance(new KafkaProducerFactory<String,String>());
        
         

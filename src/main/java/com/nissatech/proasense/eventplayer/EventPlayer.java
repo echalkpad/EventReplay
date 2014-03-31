@@ -1,8 +1,11 @@
 package com.nissatech.proasense.eventplayer;
 
 
+import com.google.inject.Inject;
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.AkerConfiguration;
+import com.nissatech.proasense.eventplayer.partnerconfigurations.InvalidPartnerException;
+import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfigurationResolver;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -37,17 +40,19 @@ public class EventPlayer
     private ServletContext context;
     @Context
     UriInfo uri;
+    @Inject
+    PartnerConfigurationResolver resolver;
 
     @POST
     @Produces(value = MediaType.TEXT_PLAIN)
     @ValidateOnExecution
-    public Response startWorker(@Valid PlaybackRequest request) throws MalformedURLException
+    public Response startWorker(@Valid PlaybackRequest request) throws MalformedURLException, InvalidPartnerException
     {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) context.getAttribute("executor");
         Map<String, AsyncRequestWorker> jobMap = (Map<String, AsyncRequestWorker>) context.getAttribute("jobs");
         
         request.setSubmitted(new DateTime());
-        AsyncRequestWorker worker = new AsyncRequestWorker(request, UUID.randomUUID().toString(), new AkerConfiguration());
+        AsyncRequestWorker worker = new AsyncRequestWorker(request, UUID.randomUUID().toString(), resolver.getConfiguration(request.getPartner()));
         executor.execute(worker);
         jobMap.put(worker.getId(), worker);
         

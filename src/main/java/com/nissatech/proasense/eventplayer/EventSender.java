@@ -31,7 +31,7 @@ public class EventSender implements Runnable
     public void run()
     {
 
-        System.out.println("sending something");
+        //System.out.println("sending something");
 //        KeyedMessage<String, String> message = new KeyedMessage<String, String>("some_topic", "MSG"+System.currentTimeMillis());
         KeyedMessage<String, String> message = new KeyedMessage<String, String>(request.getTopic(), payload);
         kafkaProducer.send(message);

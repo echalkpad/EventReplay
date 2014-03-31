@@ -28,10 +28,11 @@ public class KafkaProducerFactory<T,R>
     {
         props.put("metadata.broker.list", props.getProperty("kafka.host"));
         props.put("serializer.class", "kafka.serializer.StringEncoder");
-        props.put("producer.type", "async");
+        props.put("producer.type", "sync");
         props.put("queue.enqueue.timeout.ms", "-1");
         props.put("batch.num.messages", "200");
         props.put("compression.codec", "1");
+        props.put("request.required.acks", "0");
         ProducerConfig config = new ProducerConfig(props);
         return new Producer<T, R>(config);
     }

@@ -19,7 +19,7 @@ public class PartnerConfigurationResolver
         if(partner.equalsIgnoreCase("aker"))
             return new AkerConfiguration();
         if(partner.equalsIgnoreCase("hella"))
-            return null;
+            return new HellaConfiguration();
         throw new InvalidPartnerException();
     }
     

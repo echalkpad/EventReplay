@@ -1,3 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package com.nissatech.proasense.eventplayer.partnerconfigurations;
 
 import com.datastax.driver.core.BoundStatement;
@@ -18,7 +24,7 @@ import org.joda.time.Hours;
  *
  * @author aleksandar
  */
-public class AkerConfiguration implements PartnerConfiguration
+public class HellaConfiguration implements PartnerConfiguration
 {
 
     @Override
@@ -41,7 +47,7 @@ public class AkerConfiguration implements PartnerConfiguration
         }
 
         //the ? in the prepared query is out of parenthesis for a reason. This is a deviation from the standard when using the IN keyword
-        String query = "select * from aker_variables where type_hour_stamp in ? order by variable_timestamp";
+        String query = "select * from hella_variables where type_hour_stamp in ? order by variable_timestamp";
         BoundStatement statement = client.prepareStatement(query);
         statement.bind(inKeys);
 
@@ -51,7 +57,7 @@ public class AkerConfiguration implements PartnerConfiguration
     @Override
     public String generateMessage(Row row) throws IOException
     {
-        ObjectMapper mapper = new ObjectMapper();
+        /*ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         mapper.setDateFormat(new ISO8601DateFormat());
         HashMap message = new HashMap();
@@ -59,7 +65,8 @@ public class AkerConfiguration implements PartnerConfiguration
         message.put("variable_timestamp", date);
         message.put("value", row.getDouble("value"));
         message.put("variable_type", row.getString("variable_type"));
-        return mapper.writeValueAsString(message);
+        return mapper.writeValueAsString(message);*/
+        return "holla mundo";
     }
 
     @Override
@@ -80,5 +87,5 @@ public class AkerConfiguration implements PartnerConfiguration
         }
         return mapper.writeValueAsString(batch);
     }
-
+    
 }

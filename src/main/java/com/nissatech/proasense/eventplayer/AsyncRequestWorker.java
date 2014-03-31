@@ -31,7 +31,7 @@ public class AsyncRequestWorker implements Runnable
     private boolean running;
     private boolean finished;
 
-    private final Semaphore sendersAvailable = new Semaphore(10, true);
+    private final Semaphore sendersAvailable = new Semaphore(50,true);
 
     private final PartnerConfiguration partnerConfiguration;
     
@@ -57,7 +57,7 @@ public class AsyncRequestWorker implements Runnable
         this.id = id;
         running = true;
         finished = false;
-        scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler = Executors.newScheduledThreadPool(1);
         this.partnerConfiguration = conf;
 
     }
@@ -86,6 +86,7 @@ public class AsyncRequestWorker implements Runnable
     public void run()
     {
         Producer producer = null;
+        
         try
         {
             /** This is overriding injection since it is not working for now**/
@@ -94,30 +95,31 @@ public class AsyncRequestWorker implements Runnable
             cassandraClient = new CassandraClient();
             cassandraClient.connect(properties.getProperty("cassandra.host"));
             kpFactory = new KafkaProducerFactory<String,String>();
+           
             //****//
             
             BoundStatement generatedQuery = partnerConfiguration.generateQuery(request.getStartTime(), request.getEndTime(), request.getVariables(), cassandraClient);
             ResultSet results = cassandraClient.execute(generatedQuery);
-            long previous = Long.MAX_VALUE;
-            long lastSendSubmitted = 0L;
+            long accumulatedDelay = 0;
+            long startOfSending = System.currentTimeMillis();
+            long previousEventTime=Long.MAX_VALUE;
+            //d(x) = d(x-1) + d(ex-1, x1) - (Tnow - Tstart)
             for (Row row : results)
             {
 
                 sendersAvailable.acquire();
-                long deltaRealTime = System.currentTimeMillis() - lastSendSubmitted; //we have to count in the CPU overhead (waiting for the thread pool and such). That time will be deducted from the pause between events. Real (current) time span at which the last event was scheduled
+                
                 DateTime eventTime = new DateTime(row.getDate("variable_timestamp"));
-
-                long deltaEvent = eventTime.getMillis() - previous; 
-                long deltaAbsolute = deltaEvent - deltaRealTime; //the time in which the event should be scheduled, based on the difference between the last recorded event and time when the last one is scheduled
-                if (deltaAbsolute < 0)
-                {
-                    deltaAbsolute = 0;
-                }
+                long deltaEvent = eventTime.getMillis() - previousEventTime;
+                if(deltaEvent < 0) deltaEvent =0;
+                accumulatedDelay += deltaEvent;
+                
+                long deltaAbsolute = accumulatedDelay - (System.currentTimeMillis() - startOfSending);
                 producer = kpFactory.createProducer();
+                
+                System.out.println(deltaEvent);
                 scheduler.schedule(new EventSender(sendersAvailable, producer, partnerConfiguration.generateMessage(row), request), deltaAbsolute, TimeUnit.MILLISECONDS);
-
-                lastSendSubmitted = System.currentTimeMillis();
-                previous = eventTime.getMillis();
+                previousEventTime = eventTime.getMillis();
             }
 
             scheduler.shutdown();
