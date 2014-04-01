@@ -17,6 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.jboss.resteasy.annotations.GZIP;
 import org.joda.time.DateTime;
 
 /**
@@ -37,6 +38,7 @@ public class BatchEvents
     
     
     @GET
+    @GZIP
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{partner}/variables/{variables}/between/{startTime}/and/{endTime}")
     public Response batchEvents(@PathParam("partner") String partner, @PathParam("variables") String variables, @PathParam("startTime") DateTime start, @PathParam("endTime") DateTime end) throws IOException, InvalidPartnerException
