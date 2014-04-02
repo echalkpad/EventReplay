@@ -24,14 +24,14 @@ public class ContextListener implements ServletContextListener
     public void contextInitialized(ServletContextEvent sce)
     {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(100, 200, Long.MAX_VALUE, TimeUnit.NANOSECONDS, new ArrayBlockingQueue<Runnable>(100));
-        //Map jobs = new ConcurrentHashMap<String,AsyncRequestWorker>();
+
         sce.getServletContext().setAttribute("executor", executor);
         final ConcurrentHashMap<String, AsyncRequestWorker> jobs = new ConcurrentHashMap<String, AsyncRequestWorker>();
         sce.getServletContext().setAttribute("jobs", jobs);
         ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutor.scheduleAtFixedRate(new Runnable()
         {
-
+            //purging finished workers
             @Override
             public void run()
             {

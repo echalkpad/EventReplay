@@ -10,7 +10,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 /**
- *
+ * Provider converting between {@link ISODateTimeFormat} and String.
+ * TODO: Check if this is even being used anywhere.
  * @author aleksandar
  */
 @Provider

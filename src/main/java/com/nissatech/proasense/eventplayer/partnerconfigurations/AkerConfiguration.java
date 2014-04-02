@@ -15,12 +15,15 @@ import org.joda.time.DateTime;
 import org.joda.time.Hours;
 
 /**
- *
- * @author aleksandar
+ * {@inheritDoc}
+ * Implements the configuration for the Aker use case
  */
 public class AkerConfiguration implements PartnerConfiguration
 {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BoundStatement generateQuery(DateTime startTime, DateTime endTime, List<String> variables, CassandraClient client)
     {
@@ -40,7 +43,7 @@ public class AkerConfiguration implements PartnerConfiguration
 
         }
 
-        //the ? in the prepared query is out of parenthesis for a reason. This is a deviation from the standard when using the IN keyword
+        //the ? in the prepared query is out of parenthesis for a reason. This is a deviation from the typical CQL standard when using the IN keyword
         String query = "select * from aker_variables where type_hour_stamp in ? order by variable_timestamp";
         BoundStatement statement = client.prepareStatement(query);
         statement.bind(inKeys);
@@ -48,6 +51,9 @@ public class AkerConfiguration implements PartnerConfiguration
         return statement;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateMessage(Row row) throws IOException
     {
@@ -62,6 +68,9 @@ public class AkerConfiguration implements PartnerConfiguration
         return mapper.writeValueAsString(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateBatch(ResultSet rows) throws IOException
     {

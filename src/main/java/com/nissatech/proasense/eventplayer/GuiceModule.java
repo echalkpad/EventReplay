@@ -6,7 +6,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.nissatech.proasense.eventplayer.context.ContextListener;
 import com.nissatech.proasense.eventplayer.context.DateTimeConverter;
 import com.nissatech.proasense.eventplayer.context.JacksonConfigurator;
-import com.nissatech.proasense.eventplayer.context.KafkaProducerFactory;
+import com.nissatech.proasense.eventplayer.factories.KafkaProducerFactory;
 import com.nissatech.proasense.eventplayer.exception.mappers.InvalidPartnerExceptionMapper;
 import com.nissatech.proasense.eventplayer.factories.AsyncRequestWorkerFactory;
 import com.nissatech.proasense.eventplayer.model.CassandraClient;

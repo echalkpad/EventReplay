@@ -17,7 +17,11 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 
 
-
+/**
+ * JAX-RS provider configuring Jackson to parse the request before being forwarded to the application.
+ * TODO: Find a way to use the same object mapper already configured here in resource providers, so the configuration is consistent throughout the service.
+ * @author aleksandar
+ */
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON) 

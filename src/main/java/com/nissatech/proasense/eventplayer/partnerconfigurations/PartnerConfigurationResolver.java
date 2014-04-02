@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 /**
  *
  * @author aleksandar
+ * Factory creating an appropriate configuration based on the partner name
  */
 public class PartnerConfigurationResolver 
 {

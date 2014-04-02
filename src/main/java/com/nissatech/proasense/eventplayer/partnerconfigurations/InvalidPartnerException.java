@@ -1,9 +1,8 @@
 package com.nissatech.proasense.eventplayer.partnerconfigurations;
 
-import javax.xml.ws.WebServiceException;
 
 /**
- *
+ * Thrown when an non-existing partner is presented to the system. 
  * @author aleksandar
  */
 public class InvalidPartnerException extends Exception

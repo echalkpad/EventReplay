@@ -5,7 +5,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.nissatech.proasense.eventplayer.context.KafkaProducerFactory;
+import com.nissatech.proasense.eventplayer.factories.KafkaProducerFactory;
 import com.nissatech.proasense.eventplayer.model.CassandraClient;
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfiguration;

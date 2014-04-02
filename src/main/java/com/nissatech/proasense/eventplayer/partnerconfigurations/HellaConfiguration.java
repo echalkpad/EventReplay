@@ -20,12 +20,14 @@ import org.joda.time.DateTime;
 import org.joda.time.Hours;
 
 /**
- *
- * @author aleksandar
+ * {@inheritDoc} Implements the configuration for the Hella use case
  */
 public class HellaConfiguration implements PartnerConfiguration
 {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BoundStatement generateQuery(DateTime startTime, DateTime endTime, List<String> variables, CassandraClient client)
     {
@@ -53,6 +55,9 @@ public class HellaConfiguration implements PartnerConfiguration
         return statement;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateMessage(Row row) throws IOException
     {
@@ -67,6 +72,9 @@ public class HellaConfiguration implements PartnerConfiguration
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generateBatch(ResultSet rows) throws IOException
     {

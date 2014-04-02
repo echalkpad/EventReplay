@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
 /**
- *
+ * A model of a request sent from the client when a playback is needed.
  * @author aleksandar
  */
 
@@ -24,7 +24,7 @@ public class PlaybackRequest
     private DateTime endTime;
 
     @Null
-    private DateTime submitted;
+    private DateTime submitted; //internally set, should not be set in the request.
 
     @NotBlank
     private String topic;
@@ -46,10 +46,6 @@ public class PlaybackRequest
     @NotEmpty
     private List<String> variables;
     
-    
-
-   
-
     public PlaybackRequest()
     {
         this.variables = new ArrayList<String>();

@@ -7,7 +7,7 @@ import com.datastax.driver.core.Session;
 import com.google.inject.Inject;
 
 /**
- *
+ * An implementation of the Cassandra Client
  * @author aleksandar
  */
 public class CassandraClient
@@ -27,6 +27,9 @@ public class CassandraClient
         return this;
         
     }
+    /**
+     * Don't forget to call this when you're finished :) 
+     */
     public void close()
     {
         if(session!=null) session.close();

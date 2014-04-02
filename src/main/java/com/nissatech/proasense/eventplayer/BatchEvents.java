@@ -8,7 +8,6 @@ import com.nissatech.proasense.eventplayer.partnerconfigurations.InvalidPartnerE
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfiguration;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfigurationResolver;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Properties;
 import javax.ws.rs.GET;
@@ -23,10 +22,15 @@ import org.joda.time.DateTime;
 /**
  *
  * @author aleksandar
+ * 
+ * Class serving stored events from a period of interest in a batch (all at once in a JSON format)
  */
 @Path("/batch")
 public class BatchEvents
 { 
+    /**
+     * Retrieves 
+     */
     @Inject
     private PartnerConfigurationResolver resolver;
     
@@ -34,7 +38,7 @@ public class BatchEvents
     private CassandraClient cassandraClient;
 
     @Inject
-    private Properties properties;
+    private Properties properties; 
     
     
     @GET
@@ -45,7 +49,7 @@ public class BatchEvents
     {
         
         PartnerConfiguration configuration = resolver.getConfiguration(partner);
-        String[] variableList = variables.split(",");
+        String[] variableList = variables.split(","); //variables in a request should be separated with a comma
         
         cassandraClient.connect(properties.getProperty("cassandra.host"));
         BoundStatement generatedQuery = configuration.generateQuery(start, end, Arrays.asList(variableList), cassandraClient);

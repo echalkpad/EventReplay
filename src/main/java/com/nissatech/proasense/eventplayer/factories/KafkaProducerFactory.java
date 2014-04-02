@@ -1,4 +1,4 @@
-package com.nissatech.proasense.eventplayer.context;
+package com.nissatech.proasense.eventplayer.factories;
 
 import com.google.inject.Inject;
 import com.nissatech.proasense.eventplayer.PropertyProvider;
@@ -7,7 +7,7 @@ import kafka.javaapi.producer.Producer;
 import kafka.producer.ProducerConfig;
 
 /**
- *
+ * Factory creating Kafka producers.
  * @author aleksandar
  * @param <T> Type of the message key
  * @param <R> Type of the message payload
@@ -24,6 +24,10 @@ public class KafkaProducerFactory<T,R>
         this.props= new PropertyProvider().get();
     }
     
+    /**
+     * The created producer is created with settings hardcoded for this project.
+     * @return Configured produce
+     */
     public Producer<T, R> createProducer()
     {
         props.put("metadata.broker.list", props.getProperty("kafka.host"));
