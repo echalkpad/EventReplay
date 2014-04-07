@@ -4,7 +4,6 @@ package com.nissatech.proasense.eventplayer;
 import com.google.inject.Inject;
 import com.nissatech.proasense.eventplayer.factories.AsyncRequestWorkerFactory;
 import com.nissatech.proasense.eventplayer.model.PlaybackRequest;
-import com.nissatech.proasense.eventplayer.partnerconfigurations.AkerConfiguration;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.InvalidPartnerException;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfigurationResolver;
 import java.io.IOException;
