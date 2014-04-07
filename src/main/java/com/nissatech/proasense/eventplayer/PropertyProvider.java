@@ -7,7 +7,7 @@ import java.util.Properties;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Provides configuration from conf.properties.
  * @author aleksandar
  */
 public class PropertyProvider implements Provider<Properties>

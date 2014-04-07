@@ -29,8 +29,9 @@ import javax.ws.rs.core.UriInfo;
 import org.joda.time.DateTime;
 
 /**
- *
+ * REST interfaces for controlling playback processes
  * @author aleksandar
+ * 
  */
 @Path("/playback")
 public class EventPlayer

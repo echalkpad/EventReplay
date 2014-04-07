@@ -7,7 +7,7 @@ import kafka.producer.KeyedMessage;
 
 
 /**
- *
+ * Single event scheduled for sending
  * @author aleksandar
  */
 public class EventSender implements Runnable
