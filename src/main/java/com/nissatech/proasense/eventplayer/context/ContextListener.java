@@ -1,5 +1,6 @@
 package com.nissatech.proasense.eventplayer.context;
 
+
 import com.nissatech.proasense.eventplayer.AsyncRequestWorker;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -26,7 +27,7 @@ public class ContextListener implements ServletContextListener
         ThreadPoolExecutor executor = new ThreadPoolExecutor(100, 200, Long.MAX_VALUE, TimeUnit.NANOSECONDS, new ArrayBlockingQueue<Runnable>(100));
 
         sce.getServletContext().setAttribute("executor", executor);
-        final ConcurrentHashMap<String, AsyncRequestWorker> jobs = new ConcurrentHashMap<String, AsyncRequestWorker>();
+        final ConcurrentHashMap<String,AsyncRequestWorker> jobs = new ConcurrentHashMap<String,AsyncRequestWorker>();
         sce.getServletContext().setAttribute("jobs", jobs);
         ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutor.scheduleAtFixedRate(new Runnable()
@@ -35,7 +36,7 @@ public class ContextListener implements ServletContextListener
             @Override
             public void run()
             {
-                for (Map.Entry<String, AsyncRequestWorker> s : jobs.entrySet()) {
+                for (Map.Entry<String,AsyncRequestWorker> s : jobs.entrySet()) {
                     if (!s.getValue().isRunning()) {
                         jobs.remove(s.getKey());
                     }

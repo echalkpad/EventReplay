@@ -20,7 +20,8 @@ import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * A worker that executes the playback task. It controls the event order and pace as well as
+ * the number of future-scheduled sends.
  * @author Aleksandar
  */
 public class AsyncRequestWorker implements Runnable

@@ -9,6 +9,7 @@ import com.nissatech.proasense.eventplayer.context.JacksonConfigurator;
 import com.nissatech.proasense.eventplayer.factories.KafkaProducerFactory;
 import com.nissatech.proasense.eventplayer.exception.mappers.InvalidPartnerExceptionMapper;
 import com.nissatech.proasense.eventplayer.factories.AsyncRequestWorkerFactory;
+import com.nissatech.proasense.eventplayer.filters.SecurityFilter;
 import com.nissatech.proasense.eventplayer.model.CassandraClient;
 import com.nissatech.proasense.eventplayer.partnerconfigurations.PartnerConfigurationResolver;
 import java.util.Properties;
@@ -45,6 +46,11 @@ public class GuiceModule implements Module
          * Exception mappers *
          */
         binder.bind(InvalidPartnerExceptionMapper.class);
+        
+        /**
+         *  Filters
+         */
+        binder.bind(SecurityFilter.class);
 
         /**
          * Custom classes*

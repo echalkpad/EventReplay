@@ -17,5 +17,6 @@ public interface AsyncRequestWorkerFactory
      * @param conf Client configuration based on he client's request
      * @return The configured worker 
      */
-   AsyncRequestWorker create(PlaybackRequest request, String id, PartnerConfiguration conf) ;
+        
+    AsyncRequestWorker create(PlaybackRequest request, String id, PartnerConfiguration conf);
 }

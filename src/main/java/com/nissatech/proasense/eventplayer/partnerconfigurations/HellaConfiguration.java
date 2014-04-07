@@ -68,6 +68,7 @@ public class HellaConfiguration implements PartnerConfiguration
         DateTime date = new DateTime(row.getDate("variable_timestamp"));
         message.put("variable_timestamp", date);
         message.put("values", row.getMap("values", String.class, String.class));
+        message.put("variable_type", row.getString("variable_type"));
         return mapper.writeValueAsString(message);
 
     }
@@ -88,6 +89,7 @@ public class HellaConfiguration implements PartnerConfiguration
             DateTime date = new DateTime(row.getDate("variable_timestamp"));
             message.put("variable_timestamp", date);
             message.put("values", row.getMap("values", String.class, String.class));
+            message.put("variable_type", row.getString("variable_type"));
             batch.add(message);
         }
         return mapper.writeValueAsString(batch);
